@@ -2,11 +2,16 @@
 Carbon emissions play a crucial role in the environment, accounting for over 75% of global emissions and posing a significant environmental challenge. This report aims to analyze carbon emissions to examine the carbon footprint across various industries.
 
 <img src ="https://geographical.co.uk/wp-content/uploads/carbon-dioxide-emissions-title-1200x800.jpg" />
-Source: https://geographical.co.uk/climate-change/geo-explainer-how-carbon-emissions-affect-climate
+Source img: https://geographical.co.uk/climate-change/geo-explainer-how-carbon-emissions-affect-climate
 
-## DATA 
+## DATA
 Dataset is compiled from publicly available data from nature.com and encompasses the product carbon footprints (PCF) for various companies. PCFs represent the greenhouse gas emissions associated with specific products, quantified in CO2 (carbon dioxide equivalent).
 
+#### Data Structure
+
+![img](img/Database diagram.png)
+
+#### Data Sample
 ###### product_emissions
 |id|company_id|country_id|industry_group_id|year|product_name|weight_kg|carbon_footprint_pcf|upstream_percent_total_pcf|operations_percent_total_pcf|downstream_percent_total_pcf|
 |--|----------|----------|-----------------|----|------------|---------|--------------------|--------------------------|----------------------------|----------------------------|
