@@ -68,3 +68,66 @@ Dataset is compiled from publicly available data from nature.com and encompasses
 |8|Finland|
 |9|France|
 |10|Germany|
+
+## Research
+
+#### 1.Which products contribute the most to carbon emissions?
+Top 10 products contribute most carbon emissions
+
+```
+SELECT
+    pe.product_name,
+    SUM(pe.carbon_footprint_pcf) AS TotalCarbon,
+FROM
+    product_emissions pe
+GROUP BY 
+	pe.product_name 
+ORDER BY
+    TotalCarbon DESC
+LIMIT 10;
+```
+
+|product_name|TotalCarbon|
+|------------|-----------|
+|Wind Turbine G128 5 Megawats|3718044|
+|Wind Turbine G132 5 Megawats|3276187|
+|Wind Turbine G114 2 Megawats|1532608|
+|Wind Turbine G90 2 Megawats|1251625|
+|TCDE|198150|
+|Land Cruiser Prado. FJ Cruiser. Dyna trucks. Toyoace.IMV def unit.|191687|
+|Retaining wall structure with a main wall (sheet pile): 136 tonnes of steel sheet piles and 4 tonnes of tierods per 100 meter wall|167000|
+|Electric Motor|160655|
+|Audi A6|111282|
+|Average of all GM vehicles produced and used in the 10 year life-cycle.|100621|
+
+
+#### What are the industry groups of these products?
+Top 10 products contribute most carbon emissions with these industry groups
+
+```
+SELECT
+    pe.product_name,
+    SUM(pe.carbon_footprint_pcf) AS TotalCarbon,
+    ig.industry_group 
+FROM
+    product_emissions pe
+    JOIN industry_groups ig ON pe.industry_group_id = ig.id 
+GROUP BY 
+	pe.product_name 
+ORDER BY
+    TotalCarbon DESC
+LIMIT 10;
+```
+
+|product_name|TotalCarbon|industry_group|
+|------------|-----------|--------------|
+|Wind Turbine G128 5 Megawats|3718044|Electrical Equipment and Machinery|
+|Wind Turbine G132 5 Megawats|3276187|Electrical Equipment and Machinery|
+|Wind Turbine G114 2 Megawats|1532608|Electrical Equipment and Machinery|
+|Wind Turbine G90 2 Megawats|1251625|Electrical Equipment and Machinery|
+|TCDE|198150|Materials|
+|Land Cruiser Prado. FJ Cruiser. Dyna trucks. Toyoace.IMV def unit.|191687|Automobiles & Components|
+|Retaining wall structure with a main wall (sheet pile): 136 tonnes of steel sheet piles and 4 tonnes of tierods per 100 meter wall|167000|Materials|
+|Electric Motor|160655|Capital Goods|
+|Audi A6|111282|Automobiles & Components|
+|Average of all GM vehicles produced and used in the 10 year life-cycle.|100621|Automobiles & Components|
