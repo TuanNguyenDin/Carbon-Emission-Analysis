@@ -77,28 +77,31 @@ Top 10 products contribute most carbon emissions
 ```
 SELECT
     pe.product_name,
-    SUM(pe.carbon_footprint_pcf) AS TotalCarbon,
+    AVG(pe.carbon_footprint_pcf) AS average_carbon,
+    ROUND((AVG(pe.carbon_footprint_pcf)/pe.weight_kg) , 2) AS average_carbon_by_weight
 FROM
     product_emissions pe
 GROUP BY 
 	pe.product_name 
 ORDER BY
-    TotalCarbon DESC
+    average_carbon DESC
 LIMIT 10;
 ```
 
-|product_name|TotalCarbon|
-|------------|-----------|
-|Wind Turbine G128 5 Megawats|3718044|
-|Wind Turbine G132 5 Megawats|3276187|
-|Wind Turbine G114 2 Megawats|1532608|
-|Wind Turbine G90 2 Megawats|1251625|
-|TCDE|198150|
-|Land Cruiser Prado. FJ Cruiser. Dyna trucks. Toyoace.IMV def unit.|191687|
-|Retaining wall structure with a main wall (sheet pile): 136 tonnes of steel sheet piles and 4 tonnes of tierods per 100 meter wall|167000|
-|Electric Motor|160655|
-|Audi A6|111282|
-|Average of all GM vehicles produced and used in the 10 year life-cycle.|100621|
+|product_name|average_carbon|average_carbon_by_weight|
+|------------|--------------|------------------------|
+|Wind Turbine G128 5 Megawats|3718044.0000|6.2|
+|Wind Turbine G132 5 Megawats|3276187.0000|5.46|
+|Wind Turbine G114 2 Megawats|1532608.0000|3.83|
+|Wind Turbine G90 2 Megawats|1251625.0000|3.47|
+|Land Cruiser Prado. FJ Cruiser. Dyna trucks. Toyoace.IMV def unit.|191687.0000|84.36|
+|Retaining wall structure with a main wall (sheet pile): 136 tonnes of steel sheet piles and 4 tonnes of tierods per 100 meter wall|167000.0000|1.19|
+|TCDE|99075.0000|8.26|
+|Mercedes-Benz GLE (GLE 500 4MATIC)|91000.0000|26.0|
+|Mercedes-Benz S-Class (S 500)|85000.0000|41.46|
+|Mercedes-Benz SL (SL 350)|72000.0000|34.87|
+
+
 
 
 #### What are the industry groups of these products?
@@ -107,7 +110,8 @@ Top 10 products contribute most carbon emissions with these industry groups
 ```
 SELECT
     pe.product_name,
-    SUM(pe.carbon_footprint_pcf) AS TotalCarbon,
+    AVG(pe.carbon_footprint_pcf) AS average_carbon,
+    ROUND((AVG(pe.carbon_footprint_pcf)/pe.weight_kg) , 2) AS average_carbon_by_weight,
     ig.industry_group 
 FROM
     product_emissions pe
@@ -115,19 +119,78 @@ FROM
 GROUP BY 
 	pe.product_name 
 ORDER BY
-    TotalCarbon DESC
+    average_carbon DESC
 LIMIT 10;
 ```
 
-|product_name|TotalCarbon|industry_group|
-|------------|-----------|--------------|
-|Wind Turbine G128 5 Megawats|3718044|Electrical Equipment and Machinery|
-|Wind Turbine G132 5 Megawats|3276187|Electrical Equipment and Machinery|
-|Wind Turbine G114 2 Megawats|1532608|Electrical Equipment and Machinery|
-|Wind Turbine G90 2 Megawats|1251625|Electrical Equipment and Machinery|
-|TCDE|198150|Materials|
-|Land Cruiser Prado. FJ Cruiser. Dyna trucks. Toyoace.IMV def unit.|191687|Automobiles & Components|
-|Retaining wall structure with a main wall (sheet pile): 136 tonnes of steel sheet piles and 4 tonnes of tierods per 100 meter wall|167000|Materials|
-|Electric Motor|160655|Capital Goods|
-|Audi A6|111282|Automobiles & Components|
-|Average of all GM vehicles produced and used in the 10 year life-cycle.|100621|Automobiles & Components|
+|product_name|average_carbon|average_carbon_by_weight|industry_group|
+|------------|--------------|------------------------|--------------|
+|Wind Turbine G128 5 Megawats|3718044.0000|6.2|Electrical Equipment and Machinery|
+|Wind Turbine G132 5 Megawats|3276187.0000|5.46|Electrical Equipment and Machinery|
+|Wind Turbine G114 2 Megawats|1532608.0000|3.83|Electrical Equipment and Machinery|
+|Wind Turbine G90 2 Megawats|1251625.0000|3.47|Electrical Equipment and Machinery|
+|Land Cruiser Prado. FJ Cruiser. Dyna trucks. Toyoace.IMV def unit.|191687.0000|84.36|Automobiles & Components|
+|Retaining wall structure with a main wall (sheet pile): 136 tonnes of steel sheet piles and 4 tonnes of tierods per 100 meter wall|167000.0000|1.19|Materials|
+|TCDE|99075.0000|8.26|Materials|
+|Mercedes-Benz GLE (GLE 500 4MATIC)|91000.0000|26.0|Automobiles & Components|
+|Mercedes-Benz S-Class (S 500)|85000.0000|41.46|Automobiles & Components|
+|Mercedes-Benz SL (SL 350)|72000.0000|34.87|Automobiles & Components|
+
+
+
+
+#### What are the industries with the highest contribution to carbon emissions?
+Get 10 industries with the highest contribution to carbon emissions 
+
+
+```
+SELECT 
+	ig.industry_group,
+	SUM(pe.carbon_footprint_pcf) AS total_carbon_footprint
+FROM product_emissions pe 
+JOIN industry_groups ig ON pe.industry_group_id = ig.id 
+GROUP BY ig.industry_group
+ORDER BY total_carbon_footprint DESC 
+LIMIT 10;
+```
+
+
+|industry_group|total_carbon_footprint|
+|--------------|----------------------|
+|Electrical Equipment and Machinery|9801558|
+|Automobiles & Components|2582264|
+|Materials|577595|
+|Technology Hardware & Equipment|363776|
+|Capital Goods|258712|
+|"Food, Beverage & Tobacco"|111131|
+|"Pharmaceuticals, Biotechnology & Life Sciences"|72486|
+|Chemicals|62369|
+|Software & Services|46544|
+|Media|23017|
+
+#### What are the companies with the highest contribution to carbon emissions?
+Get 10 companies with the highest contribution to carbon emissions
+
+```
+SELECT 
+	c.company_name,
+	SUM(pe.carbon_footprint_pcf) AS total_carbon_footprint
+FROM product_emissions pe 
+	JOIN companies c ON pe.company_id = c.id 
+GROUP BY c.company_name 
+ORDER BY total_carbon_footprint DESC 
+LIMIT 10;
+```
+
+|company_name|total_carbon_footprint|
+|------------|----------------------|
+|"Gamesa Corporación Tecnológica, S.A."|9778464|
+|Daimler AG|1594300|
+|Volkswagen AG|655960|
+|"Mitsubishi Gas Chemical Company, Inc."|212016|
+|"Hino Motors, Ltd."|191687|
+|Arcelor Mittal|167007|
+|Weg S/A|160655|
+|General Motors Company|137007|
+|"Lexmark International, Inc."|132012|
+|"Daikin Industries, Ltd."|105600|
