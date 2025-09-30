@@ -9,7 +9,7 @@ Dataset is compiled from publicly available data from nature.com and encompasses
 
 #### Data Structure
 
-![img](img/Database diagram.png)
+[alt](img/Database diagram.png)
 
 #### Data Sample
 ###### product_emissions
