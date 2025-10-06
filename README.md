@@ -257,8 +257,7 @@ LIMIT 10;
 |Taiwan|62875|
 |India|24574|
 
-* Spain's total emissions were 9,786,130. This figure is almost identical to the total emissions of the company that topped the previous list: "Gamesa Corporación Tecnológica, S.A." (9,778,464).
-  ==> This shows that Gamesa is Spain's main emitter.
+* Spain's total emissions were 9,786,130. This figure is almost identical to the total emissions of the company that topped the previous list: "Gamesa Corporación Tecnológica, S.A." (9,778,464). This shows that Gamesa is Spain's main emitter.
 * Germany: Ranked second with 2,251,225. This figure is close to the total emissions of German automakers in the previous data (Daimler AG + Volkswagen AG ≈ 2,250,260).
 * Japan: Ranked third with 653,237. This figure is in line with the total emissions of Japanese companies in the list (Hino Motors, Mitsubishi Gas Chemical, Daikin Industries, Ltd.).
 
@@ -309,13 +308,13 @@ ORDER BY
 |2016|6891.52|1640182|238|Land Cruiser Prado. FJ Cruiser. Dyna trucks. Toyoace.IMV def unit.|
 |2017|4050.85|340271|84|TCDE|
 
-2013 record low emissions, led by a massive steel structure (low PCF/kg).
-2014 Emissions were stable compared to 2013, due to a lighter industrial machinery product.
-2015 recorded a significantly higher average_pcf (43,188.90) and total_pcf_sum (10,840,415) than any other year.
-* The largest emitter 2015 was the 5 Megawatts G128 Wind Turbine.
-* This wind turbine was the largest absolute emitter of carbon in the entire dataset, with a PCF of 3,718,044.00. This pushed the total emissions for the year highest.
-2016 record a significant growth. This spike is likely related to the recorded shipments of high carbon intensity (high PCF/kg) cars.
-2017 record is down from 2016, but still higher than 2013/2014. The number of products recorded has dropped sharply (only 84 records), making it more difficult to assess trends.
+1. 2013 record low emissions, led by a massive steel structure (low PCF/kg).
+2. 2014 Emissions were stable compared to 2013, due to a lighter industrial machinery product.
+3. 2015 recorded a significantly higher average_pcf (43,188.90) and total_pcf_sum (10,840,415) than any other year.
+  * The largest emitter 2015 was the 5 Megawatts G128 Wind Turbine.
+  * This wind turbine was the largest absolute emitter of carbon in the entire dataset, with a PCF of 3,718,044.00. This pushed the total emissions for the year highest.
+4. 2016 record a significant growth. This spike is likely related to the recorded shipments of high carbon intensity (high PCF/kg) cars.
+5. 2017 record is down from 2016, but still higher than 2013/2014. The number of products recorded has dropped sharply (only 84 records), making it more difficult to assess trends.
 
 
 
