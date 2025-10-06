@@ -101,8 +101,19 @@ LIMIT 10;
 |Mercedes-Benz S-Class (S 500)|85000.0000|41.46|
 |Mercedes-Benz SL (SL 350)|72000.0000|34.87|
 
+Looking at the average_carbon column, it is clear that Wind Turbine dominates the absolute carbon emissions list, taking the top 4 spots.
 
+* The G128 5 Megawatts Wind Turbine has the highest emissions.
 
+* While wind turbines are a clean energy technology when they are in operation, these high emissions almost certainly come from the Upstream stage. The production of high carbon intensity materials such as towers and components and blades. The sheer size and weight of these components.
+
+* Otherwise, the product with the highest Carbon intensity: Land Cruiser Prado. FJ Cruiser. Dyna trucks... has the highest carbon intensity with 84.36 kg CO2 per kg of product weight, nearly 14 times that of the largest wind turbine (6.2).
+
+Conclusion:
+
+* Wind turbines are a large CO 2 problem due to their size.
+
+* Trucks/SUVs are a low CO 2 problem due to their unclean manufacturing processes per unit weight.
 
 #### What are the industry groups of these products?
 Top 10 products contribute most carbon emissions with these industry groups
@@ -194,3 +205,135 @@ LIMIT 10;
 |General Motors Company|137007|
 |"Lexmark International, Inc."|132012|
 |"Daikin Industries, Ltd."|105600|
+
+#### What are the countries with the highest contribution to carbon emissions?
+Get 10 countries with the highest contribution to carbon emissions
+
+```
+SELECT 
+	c.country_name,
+	SUM(pe.carbon_footprint_pcf) AS total_carbon_footprint
+FROM product_emissions pe 
+	JOIN countries c ON pe.country_id = c.id 
+GROUP BY c.country_name 
+ORDER BY total_carbon_footprint DESC 
+LIMIT 10;
+```
+
+|country_name|total_carbon_footprint|
+|------------|----------------------|
+|Spain|9786130|
+|Germany|2251225|
+|Japan|653237|
+|USA|518381|
+|South Korea|186965|
+|Brazil|169337|
+|Luxembourg|167007|
+|Netherlands|70417|
+|Taiwan|62875|
+|India|24574|
+
+#### What is the trend of carbon footprints (PCFs) over the years?
+To analyze the trend of carbon footprint (PCF) over the years, we need to calculate the total or average carbon footprint (carbon_footprint_pcf) for each year in the product_emissions table.
+
+```
+SELECT
+    year,
+    ROUND(AVG(carbon_footprint_pcf), 2) AS average_pcf,
+    SUM(carbon_footprint_pcf) AS total_pcf_sum,
+    COUNT(id) AS number_of_products_recorded
+FROM
+    product_emissions
+GROUP BY
+    year
+ORDER BY
+    year;
+```
+
+|year|average_pcf|total_pcf_sum|number_of_products_recorded|
+|----|-----------|-------------|---------------------------|
+|2013|2399.32|503857|210|
+|2014|2457.58|624226|254|
+|2015|43188.90|10840415|251|
+|2016|6891.52|1640182|238|
+|2017|4050.85|340271|84|
+
+#### Which industry groups has demonstrated the most notable decrease in carbon footprints (PCFs) over time?
+Find the earliest and latest year for each industry. Take the average PCF for each industry over all years. Calculate the reduction (start - end).
+
+```
+SELECT
+    ig.industry_group,
+    T.start_year,
+    T.end_year,
+    T.start_pcf_avg,
+    T.end_pcf_avg,
+    ROUND((T.start_pcf_avg - T.end_pcf_avg), 2) AS pcf_decrease
+FROM
+    industry_groups ig
+INNER JOIN
+    (
+        SELECT
+            t1.industry_group_id,
+            t1.start_year,
+            t1.end_year,
+            (
+                SELECT AVG(pe_start.carbon_footprint_pcf)
+                FROM product_emissions pe_start
+                WHERE pe_start.industry_group_id = t1.industry_group_id AND pe_start.year = t1.start_year
+            ) AS start_pcf_avg,
+            (
+                SELECT AVG(pe_end.carbon_footprint_pcf)
+                FROM product_emissions pe_end
+                WHERE pe_end.industry_group_id = t1.industry_group_id AND pe_end.year = t1.end_year
+            ) AS end_pcf_avg
+        FROM
+            (
+                SELECT
+                    industry_group_id,
+                    MIN(year) AS start_year,
+                    MAX(year) AS end_year
+                FROM
+                    product_emissions
+                GROUP BY
+                    industry_group_id
+            ) AS t1
+    ) AS T
+ON
+    ig.id = T.industry_group_id
+ORDER BY
+    pcf_decrease DESC;
+```
+
+|industry_group|start_year|end_year|start_pcf_avg|end_pcf_avg|pcf_decrease|
+|--------------|----------|--------|-------------|-----------|------------|
+|Media|2013|2016|2411.2500|602.6667|1808.58|
+|Technology Hardware & Equipment|2013|2017|1053.4483|788.3429|265.11|
+|Consumer Durables & Apparel|2013|2016|286.7000|40.0690|246.63|
+|Food & Staples Retailing|2014|2016|77.3000|0.5000|76.80|
+|Semiconductors & Semiconductor Equipment|2014|2016|16.6667|2.0000|14.67|
+|Telecommunication Services|2013|2015|52.0000|45.7500|6.25|
+|Retailing|2014|2015|6.3333|5.5000|0.83|
+|Household & Personal Products|2013|2013|0.0000|0.0000|0.00|
+|Containers & Packaging|2015|2015|373.5000|373.5000|0.00|
+|"Textiles, Apparel, Footwear and Luxury Goods"|2015|2015|14.3333|14.3333|0.00|
+|Electrical Equipment and Machinery|2015|2015|891050.7273|891050.7273|0.00|
+|"Consumer Durables, Household and Personal Products"|2015|2015|116.3750|116.3750|0.00|
+|Tires|2015|2015|1011.0000|1011.0000|0.00|
+|Food & Beverage Processing|2015|2015|7.0500|7.0500|0.00|
+|Tobacco|2015|2015|1.0000|1.0000|0.00|
+|Chemicals|2015|2015|1949.0313|1949.0313|0.00|
+|"Forest and Paper Products - Forestry, Timber, Pulp and Paper, Rubber"|2015|2015|685.3077|685.3077|0.00|
+|Trading Companies & Distributors and Commercial Services & Supplies|2015|2015|39.8333|39.8333|0.00|
+|Semiconductors & Semiconductors Equipment|2015|2015|1.0000|1.0000|0.00|
+|"Mining - Iron, Aluminum, Other Metals"|2015|2015|2727.0000|2727.0000|0.00|
+|Gas Utilities|2015|2015|61.0000|61.0000|0.00|
+|Utilities|2013|2016|61.0000|61.0000|0.00|
+|"Food, Beverage & Tobacco"|2013|2017|94.2453|143.7273|-49.48|
+|Commercial & Professional Services|2013|2017|144.6250|370.5000|-225.88|
+|Software & Services|2013|2017|1.5000|690.0000|-688.50|
+|Energy|2013|2016|750.0000|2506.0000|-1756.00|
+|Materials|2013|2017|4177.3542|11217.7368|-7040.38|
+|Capital Goods|2013|2017|5015.8333|18989.8000|-13973.97|
+|Automobiles & Components|2013|2016|26037.8000|40138.0857|-14100.29|
+|"Pharmaceuticals, Biotechnology & Life Sciences"|2013|2014|16135.5000|40215.0000|-24079.50|
