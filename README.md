@@ -71,7 +71,7 @@ Dataset is compiled from publicly available data from nature.com and encompasses
 
 ## Research
 
-#### 1.Which products contribute the most to carbon emissions?
+#### Which products contribute the most to carbon emissions?
 Top 10 products contribute most carbon emissions
 
 ```
@@ -104,16 +104,15 @@ LIMIT 10;
 Looking at the average_carbon column, it is clear that Wind Turbine dominates the absolute carbon emissions list, taking the top 4 spots.
 
 * The G128 5 Megawatts Wind Turbine has the highest emissions.
-
-* While wind turbines are a clean energy technology when they are in operation, these high emissions almost certainly come from the Upstream stage. The production of high carbon intensity materials such as towers and components and blades. The sheer size and weight of these components.
-
+* While wind turbines are a clean energy technology when they are in operation, these high emissions almost certainly come from the Upstream stage. The production of high carbon intensity materials such as towers and components and blades. The sheer size and weight of these components too big.
 * Otherwise, the product with the highest Carbon intensity: Land Cruiser Prado. FJ Cruiser. Dyna trucks... has the highest carbon intensity with 84.36 kg CO2 per kg of product weight, nearly 14 times that of the largest wind turbine (6.2).
 
 Conclusion:
 
 * Wind turbines are a large CO 2 problem due to their size.
-
 * Trucks/SUVs are a low CO 2 problem due to their unclean manufacturing processes per unit weight.
+
+
 
 #### What are the industry groups of these products?
 Top 10 products contribute most carbon emissions with these industry groups
@@ -147,6 +146,8 @@ LIMIT 10;
 |Mercedes-Benz S-Class (S 500)|85000.0000|41.46|Automobiles & Components|
 |Mercedes-Benz SL (SL 350)|72000.0000|34.87|Automobiles & Components|
 
+* As mentioned, the huge size and weight of the products are the main reasons for the high total emissions of the Electrical Equipment and Machinery industry.
+* Automobiles & Components products do not have as large an overall footprint as wind turbines but require more carbon per unit weight.
 
 
 
@@ -179,13 +180,30 @@ LIMIT 10;
 |Software & Services|46544|
 |Media|23017|
 
+* The Electrical Equipment and Machinery sector had a total emissions of 9,801,558. This was nearly four times the number of the second-ranked sector (Automobiles & Components), and accounted for the majority of total emissions among the top 10 sectors.
+* Automobiles & Components industry with total emissions of 2,582,264. As mentioned, their products have very high CO 2 /kg.
+* The Materials sector has total emissions of 577,595. Its total emissions are significantly lower than the two leading sectors. Much of the Materials sector's emissions are already included in the emissions of the sectors that use it (e.g., emissions from steel production are included in Wind Turbine emissions).
+
+
+
 #### What are the companies with the highest contribution to carbon emissions?
 Get 10 companies with the highest contribution to carbon emissions
 
 ```
 SELECT 
 	c.company_name,
-	SUM(pe.carbon_footprint_pcf) AS total_carbon_footprint
+	SUM(pe.carbon_footprint_pcf) AS total_carbon_footprint,
+	(
+        SELECT
+            pe_inner.product_name
+        FROM
+            product_emissions pe_inner
+        WHERE
+            pe_inner.company_id = c.id 
+        ORDER BY
+            pe_inner.carbon_footprint_pcf DESC
+        LIMIT 1
+    ) AS largest_emitting_product
 FROM product_emissions pe 
 	JOIN companies c ON pe.company_id = c.id 
 GROUP BY c.company_name 
@@ -193,18 +211,24 @@ ORDER BY total_carbon_footprint DESC
 LIMIT 10;
 ```
 
-|company_name|total_carbon_footprint|
-|------------|----------------------|
-|"Gamesa Corporación Tecnológica, S.A."|9778464|
-|Daimler AG|1594300|
-|Volkswagen AG|655960|
-|"Mitsubishi Gas Chemical Company, Inc."|212016|
-|"Hino Motors, Ltd."|191687|
-|Arcelor Mittal|167007|
-|Weg S/A|160655|
-|General Motors Company|137007|
-|"Lexmark International, Inc."|132012|
-|"Daikin Industries, Ltd."|105600|
+|company_name|total_carbon_footprint|largest_emitting_product|
+|------------|----------------------|------------------------|
+|"Gamesa Corporación Tecnológica, S.A."|9778464|Wind Turbine G128 5 Megawats|
+|Daimler AG|1594300|Mercedes-Benz GLE (GLE 500 4MATIC)|
+|Volkswagen AG|655960|Audi A6|
+|"Mitsubishi Gas Chemical Company, Inc."|212016|TCDE|
+|"Hino Motors, Ltd."|191687|Land Cruiser Prado. FJ Cruiser. Dyna trucks. Toyoace.IMV def unit.|
+|Arcelor Mittal|167007|Retaining wall structure with a main wall (sheet pile): 136 tonnes of steel sheet piles and 4 tonnes of tierods per 100 meter wall|
+|Weg S/A|160655|Electric Motor|
+|General Motors Company|137007|Average of all GM vehicles produced and used in the 10 year life-cycle.|
+|"Lexmark International, Inc."|132012|MX812DFE - Mono Laser Printer|
+|"Daikin Industries, Ltd."|105600|Commercial Air Conditioner|
+
+The data confirms that the total emissions of most of the top companies are dominated by one or a few specific products/product lines.
+* Gamesa Corporación Tecnológica, S.A. (9,778,464): This huge emissions are almost entirely due to the 5 Megawatts G128 Wind Turbine.
+* Hino Motors, Ltd. (191,687): Their largest emitting product is a group of vehicles (Land Cruiser Prado, FJ Cruiser, Dyna trucks).
+
+
 
 #### What are the countries with the highest contribution to carbon emissions?
 Get 10 countries with the highest contribution to carbon emissions
@@ -233,30 +257,68 @@ LIMIT 10;
 |Taiwan|62875|
 |India|24574|
 
+* Spain's total emissions were 9,786,130. This figure is almost identical to the total emissions of the company that topped the previous list: "Gamesa Corporación Tecnológica, S.A." (9,778,464).
+  ==> This shows that Gamesa is Spain's main emitter.
+* Germany: Ranked second with 2,251,225. This figure is close to the total emissions of German automakers in the previous data (Daimler AG + Volkswagen AG ≈ 2,250,260).
+* Japan: Ranked third with 653,237. This figure is in line with the total emissions of Japanese companies in the list (Hino Motors, Mitsubishi Gas Chemical, Daikin Industries, Ltd.).
+  ==> Germany and Japan's emissions come mainly from the Automotive & Components and Chemical/Machinery sectors;
+
+
+
+
 #### What is the trend of carbon footprints (PCFs) over the years?
 To analyze the trend of carbon footprint (PCF) over the years, we need to calculate the total or average carbon footprint (carbon_footprint_pcf) for each year in the product_emissions table.
 
 ```
 SELECT
-    year,
-    ROUND(AVG(carbon_footprint_pcf), 2) AS average_pcf,
-    SUM(carbon_footprint_pcf) AS total_pcf_sum,
-    COUNT(id) AS number_of_products_recorded
+    t1.year,
+    t1.average_pcf,
+    t1.total_pcf_sum,
+    t1.number_of_products_recorded,
+    (
+        SELECT
+            pe_inner.product_name
+        FROM
+            product_emissions pe_inner
+        WHERE
+            pe_inner.year = t1.year 
+        ORDER BY
+            pe_inner.carbon_footprint_pcf DESC
+        LIMIT 1
+    ) AS largest_emitting_product
 FROM
-    product_emissions
-GROUP BY
-    year
+    (
+        SELECT
+            year,
+            ROUND(AVG(carbon_footprint_pcf), 2) AS average_pcf,
+            SUM(carbon_footprint_pcf) AS total_pcf_sum,
+            COUNT(id) AS number_of_products_recorded
+        FROM
+            product_emissions
+        GROUP BY
+            year
+    ) AS t1
 ORDER BY
-    year;
+    t1.year;
 ```
 
-|year|average_pcf|total_pcf_sum|number_of_products_recorded|
-|----|-----------|-------------|---------------------------|
-|2013|2399.32|503857|210|
-|2014|2457.58|624226|254|
-|2015|43188.90|10840415|251|
-|2016|6891.52|1640182|238|
-|2017|4050.85|340271|84|
+|year|average_pcf|total_pcf_sum|number_of_products_recorded|largest_emitting_product|
+|----|-----------|-------------|---------------------------|------------------------|
+|2013|2399.32|503857|210|Retaining wall structure with a main wall (sheet pile): 136 tonnes of steel sheet piles and 4 tonnes of tierods per 100 meter wall|
+|2014|2457.58|624226|254|Electric Motor|
+|2015|43188.90|10840415|251|Wind Turbine G128 5 Megawats|
+|2016|6891.52|1640182|238|Land Cruiser Prado. FJ Cruiser. Dyna trucks. Toyoace.IMV def unit.|
+|2017|4050.85|340271|84|TCDE|
+
+2013 record low emissions, led by a massive steel structure (low PCF/kg).
+2014 Emissions were stable compared to 2013, due to a lighter industrial machinery product.
+2015 recorded a significantly higher average_pcf (43,188.90) and total_pcf_sum (10,840,415) than any other year.
+* The largest emitter 2015 was the 5 Megawatts G128 Wind Turbine.
+* This wind turbine was the largest absolute emitter of carbon in the entire dataset, with a PCF of 3,718,044.00. This pushed the total emissions for the year highest.
+2016 record a significant growth. This spike is likely related to the recorded shipments of high carbon intensity (high PCF/kg) cars.
+2017 record is down from 2016, but still higher than 2013/2014. The number of products recorded has dropped sharply (only 84 records), making it more difficult to assess trends.
+
+
 
 #### Which industry groups has demonstrated the most notable decrease in carbon footprints (PCFs) over time?
 Find the earliest and latest year for each industry. Take the average PCF for each industry over all years. Calculate the reduction (start - end).
@@ -337,3 +399,7 @@ ORDER BY
 |Capital Goods|2013|2017|5015.8333|18989.8000|-13973.97|
 |Automobiles & Components|2013|2016|26037.8000|40138.0857|-14100.29|
 |"Pharmaceuticals, Biotechnology & Life Sciences"|2013|2014|16135.5000|40215.0000|-24079.50|
+
+* Industries with products less based on heavy industrial materials (such as Media, Hardware) have significantly improved their emission levels.
+* A large number of industries have pcf_decrease=0.00. These industries only have data for a single year. It is not possible to assess the performance trends of these industries. Notably, the Electrical Equipment and Machinery industry (the largest absolute emitter) is included in this group.
+* Sectors with the largest negative pcf_decrease values ​​have seen a sharp increase. The average emissions of the Automobiles & Components sector have increased dramatically (26,037.80 → 40,138.09). The Materials sector has seen a significant increase in average emissions, which is very worrying as it is a source of supply for other sectors.
