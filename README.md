@@ -261,7 +261,6 @@ LIMIT 10;
   ==> This shows that Gamesa is Spain's main emitter.
 * Germany: Ranked second with 2,251,225. This figure is close to the total emissions of German automakers in the previous data (Daimler AG + Volkswagen AG ≈ 2,250,260).
 * Japan: Ranked third with 653,237. This figure is in line with the total emissions of Japanese companies in the list (Hino Motors, Mitsubishi Gas Chemical, Daikin Industries, Ltd.).
-  ==> Germany and Japan's emissions come mainly from the Automotive & Components and Chemical/Machinery sectors;
 
 
 
