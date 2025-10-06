@@ -71,7 +71,7 @@ Dataset is compiled from publicly available data from nature.com and encompasses
 
 ## Research
 
-#### Which products contribute the most to carbon emissions?
+### Which products contribute the most to carbon emissions?
 Top 10 products contribute most carbon emissions
 
 ```
@@ -114,7 +114,7 @@ Conclusion:
 
 
 
-#### What are the industry groups of these products?
+### What are the industry groups of these products?
 Top 10 products contribute most carbon emissions with these industry groups
 
 ```
@@ -151,7 +151,7 @@ LIMIT 10;
 
 
 
-#### What are the industries with the highest contribution to carbon emissions?
+### What are the industries with the highest contribution to carbon emissions?
 Get 10 industries with the highest contribution to carbon emissions 
 
 
@@ -186,7 +186,7 @@ LIMIT 10;
 
 
 
-#### What are the companies with the highest contribution to carbon emissions?
+### What are the companies with the highest contribution to carbon emissions?
 Get 10 companies with the highest contribution to carbon emissions
 
 ```
@@ -230,7 +230,7 @@ The data confirms that the total emissions of most of the top companies are domi
 
 
 
-#### What are the countries with the highest contribution to carbon emissions?
+### What are the countries with the highest contribution to carbon emissions?
 Get 10 countries with the highest contribution to carbon emissions
 
 ```
@@ -266,7 +266,7 @@ LIMIT 10;
 
 
 
-#### What is the trend of carbon footprints (PCFs) over the years?
+### What is the trend of carbon footprints (PCFs) over the years?
 To analyze the trend of carbon footprint (PCF) over the years, we need to calculate the total or average carbon footprint (carbon_footprint_pcf) for each year in the product_emissions table.
 
 ```
@@ -320,7 +320,7 @@ ORDER BY
 
 
 
-#### Which industry groups has demonstrated the most notable decrease in carbon footprints (PCFs) over time?
+### Which industry groups has demonstrated the most notable decrease in carbon footprints (PCFs) over time?
 Find the earliest and latest year for each industry. Take the average PCF for each industry over all years. Calculate the reduction (start - end).
 
 ```
